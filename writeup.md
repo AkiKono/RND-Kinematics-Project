@@ -195,7 +195,7 @@ IK_server.py inverse kinematics calculation steps are explained below.
 ![alt text][image18]
 
 **Results**  
-KUKA KR210 controlled by IK_server.py successfully completed pick and place cycle 10 out of 10. The video is available in the folder named "video."
+KUKA KR210 controlled by IK_server.py successfully completed pick and place cycle 10 out of 10. The video is available at https://www.youtube.com/watch?v=5j0ae7_3v10&t=55s.
 
 In the video, KUKA KR210 Arm follows the planned path and joint orientation and executes pick and place cycle. In the simulation environment, the error in the position and orientation of end effector can be small. In the real physical environment, backlash and link deformation cumulatively cause errors at end effector.
 
