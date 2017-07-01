@@ -70,8 +70,8 @@ Denavit-Hartenberg (DH) parameters for KUKA KR210 were defined using the steps b
 5. Define X axes that are common normal to both Z(i-1) and Zi  
 6. Obtain DH parameters alpha, a, d, and theta
     - alpha: the angle between Z(i-1) and Z about X(i-1) using Right-hand rule.
-    -     a: the offset from Z(i-1) to Zi along X(i-1)
-    -     d: the offset from X(i-1) to Xi along Zi
+    - a: the offset from Z(i-1) to Zi along X(i-1)
+    - d: the offset from X(i-1) to Xi along Zi
     - theta: the angle between X(i-1) to Xi about Zi using Right-hand rule.
 
 
@@ -188,7 +188,7 @@ IK_server.py inverse kinematics calculation steps are explained below.
 3. Calculate Rrpy rotation matric given roll, pitch, and yaw And Obtain wrist center position
 ![alt text][image16]
 
-4. Calculate q1, q2, and q3
+4. Calculate q1, q2, and q3  
 ![alt text][image17]
 
 5. Calculate q4, q5, and q6  
