@@ -13,23 +13,33 @@
 
 [image1]: ./misc_images/URDF.png
 [image2]: ./misc_images/URDFdefinition.jpeg
-[image3]: ./misc_images/DHparameterTable.jpeg
-[image4]: ./misc_images/WristCenterCalculation.jpeg
-[image5]: ./misc_images/q2q3.jpeg
+[image3]: ./misc_images/DHPARAM.jpeg
+[image4]: ./misc_images/WC.jpeg
+[image5]: ./misc_images/q1q2q31.jpeg
 [image6]: ./misc_images/FK.png
 [image7]: ./misc_images/HT.png
 [image8]: ./misc_images/GHT.png
 [image9]: ./misc_images/GHThandwritten.jpeg
-[image10]: ./misc_images/IPK2.png
-[image11]: ./misc_images/IPK1.png
-[image12]: ./misc_images/q4q5q6.jpeg
-[image13]: ./misc_images/q4q5q6IOK.png
+[image10]: ./misc_images/WCrotationCODE.png
+[image11]: ./misc_images/q1q2q3CODE.png
+[image12]: ./misc_images/R3_6.jpeg
+[image13]: ./misc_images/q4q5q6CODE.png
 [image14]: ./misc_images/1.png
 [image15]: ./misc_images/2.png
 [image16]: ./misc_images/3.png
-[image17]: ./misc_images/4.png
-[image18]: ./misc_images/5.png
+[image17]: ./misc_images/q1q2q3CODE.png
+[image18]: ./misc_images/q4q5q6CODE.png
 [image19]: ./misc_images/HTequ.png
+[image20]: ./misc_images/q1q2q32.jpeg
+[image21]: ./misc_images/q5.jpeg
+[image22]: ./misc_images/q4q6.jpeg
+
+[image23]: ./misc_images/POSITIVE1.png
+[image24]: ./misc_images/POSITIVE235.png
+[image25]: ./misc_images/POSITIVE46.png
+[image26]: ./misc_images/R3_6CODE.png
+[image27]: ./misc_images/q4q5q6bestCODE.png
+[image28]: ./misc_images/q4q5q6closestCODE.png
 
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/972/view) Points
@@ -66,7 +76,7 @@ Denavit-Hartenberg (DH) parameters for KUKA KR210 were defined using the steps b
 3. Label Links from 0 to n  
     - Links were labeled and defined in URDF file. Link 0 is always a fixed base link.
 4. Define Z axes directions
-    - Z axes directions were obtained by running forward_kinematics demo.Examine which direction the KUKA arm joint rotates when joints_state_publisher is set to nonzero value, and determine positive Z axes directions based on Right-hand rule.  
+    - Z axes directions were obtained by running forward_kinematics demo. Examine which direction the KUKA arm joint rotates when joints_state_publisher is set to nonzero value, and determine positive Z axes directions based on Right-hand rule. (Images shown below DH parameter table)  
 5. Define X axes that are common normal to both Z(i-1) and Zi  
 6. Obtain DH parameters alpha, a, d, and theta
     - alpha: the angle between Z(i-1) and Z about X(i-1) using Right-hand rule.
@@ -91,13 +101,20 @@ i | alpha(i-1) | a(i-1) | di | thetai
 6 | -pi/2 | 0     | 0    |
 7 | 0     | 0     | .303 | 0
 
+![alt text][image23]
+
+![alt text][image24]
+
+![alt text][image25]
+
+
 #### 2. Using the DH parameter table you derived earlier, create individual transformation matrices about each joint. In addition, also generate a generalized homogeneous transform between base_link and gripper_link using only end-effector(gripper) pose.
 
 Homogeneous transformation matrix for John J Craig's convention DH parameters is given as:
 
 ![alt text][image19]
 
-The above generalized homogeneous trnasformation matrix is defined as a function "homogeneous_transform" in the code, and individual transformation matrix at all joints 1, 2, 3, 4, 5, 6, and 7 (= gripper joint) were calculated.
+The above generalized homogeneous transformation matrix is defined as a function "homogeneous_transform" in the code, and individual transformation matrix at all joints 1, 2, 3, 4, 5, 6, and 7 (= gripper joint) were calculated.
 
 ![alt text][image6]  
 
@@ -126,16 +143,17 @@ Given wrist center position, the other three arm joints can be derived.
 
 **Inverse Position Kinematics Calculation**
 
-The path of the end effector is given, so the end effector position <px,py,pz> and orientation <roll,pitch,yaw>. These positions and orientations are defined in the base_link reference frame (the same as URDF reference frame) which is different from the end effector reference frame when DH parameters were defined. To distinguish them, let rotation matrix from URDF reference frame to the given end effector orientation as R0_EE and let rotation matrix from URDF reference frame to the end effector defined in DH parameter process as R0_GF (GF stands for gripper finger). Then, the rotation matrix, RGF_EE, can be calculated as:
+The path of the end effector is given, so the end effector position <px,py,pz> and orientation <roll,pitch,yaw>. These positions and orientations are defined in the base_link reference frame (the same as URDF reference frame) which is different from the end effector reference frame when DH parameters were defined. To distinguish them, let rotation matrix from URDF reference frame to the given end effector orientation as R0_EE and let rotation matrix from URDF reference frame to the end effector defined in DH parameter process as R0_GF (GF stands for gripper finger). From observing the rotational difference between R0_EE axes and R0_GF axes, the rotation matrix, RGF_EE is:
 
-RGF_EE = R0_GF.inv() x R0_EE  
+RGF_EE = R_z(pi) * R_y(-pi/2)  (intrinsic rotation from GF to EE)
 
-The only difference between link_6 and gripper_finger_link reference frame is the translation in z-axis by d7 and l, where d7 is the distance between link_6 and gripper_link X-axes along the common Z axis and l is the distance between gripper_link and gripper_finger_link X-axes along the common Z axis.
+The only difference between link_6 and gripper_finger_link reference frame is the translation in z-axis by d7 and l, where d7 is the distance between link_6 and gripper_link X-axes along the common Z axis and l is the distance between gripper_link and gripper_finger_link X-axes along the common Z axis. (d7 = d7+l in the code)
 
-Since the wrist center position <wx,wy,wz> is coincident with link_6 reference frame origin, wrist center can be derived by the equation:
+Since the wrist center position <wx,wy,wz> is coincident with link_6 reference frame origin and link_6 rotation matrix is equal to gripper_finger_link rotation matrix, wrist center can be derived by the equation:
 
-w = p - RGF_EE x [[0],[0],[(d7+l)]]
+w = p - R0_6 * [[0],[0],[(d7+l)]]
 
+where R0_6 = R0_GF = R0_EE * RGF_EE.inv()
 
 * Inverse Position Kinematics to Calculate Wrist Center  
 
@@ -147,26 +165,44 @@ Once the position of wrist center is known, the orientations of the first three 
 
 * Inverse Position Kinematics to Calculate q1, q2, and q3  
 
-![alt text][image5]
+![alt text][image5]  
+
+![alt text][image20]  
 
 ![alt text][image11]
 
 **Inverse Orientation Kinematics Calculation**
 
-The last step is to find orientations of the last three joints, q4, q5, and q6. The rotation matrix from URDF reference frame to the link_6 is equal to RGF_EE, which is already derived in the previous steps. Since q1, q2, and q3 are known, R3_6 can be derived as:
+The last step is to find orientations of the last three joints, q4, q5, and q6. Two different approaches are explained: solving R3_6 system equations and geometric IK.  
 
-R3_6 = R0_3.inv() x RGF_EE
+1. R3_6 system equations approach
 
-This is a 3x3 matrix with constant numbers.
-Using forward kinematics, R3_6 can be obtained from T3_6 with DH parameters and q4, q5, and q6 as variables.
+    The rotation matrix from URDF reference frame to the link_6 is equal to R0_EE, which is already derived in the previous steps. Since q1, q2, and q3 are known, R3_6 can be derived as:
 
-Equate R3_6 derived from IK and R3_6 derived from FK, three system of equations are obtained and solve for q4, q5, and q6.
+    R3_6 = R0_3.inv() x R0_EE
 
-The final equations are shown in the figure below.
+    This is a 3x3 matrix with constant numbers.
+    Using forward kinematics, R3_6 can be obtained from T3_6 with DH parameters and q4, q5, and q6 as variables.
 
-![alt text][image12]
+    Equate R3_6 derived from IK and R3_6 derived from FK, three system of equations are obtained and solve for q4, q5, and q6.
 
-![alt text][image13]
+    The final equations are shown in the figure below.
+
+    ![alt text][image12]
+
+    ![alt text][image26]
+
+
+2. Geometric IK approach  
+
+    The angle q5 is equal to the angle between unit z vector in link_4 frame and unit z vector in link_6 frame. Use The Laws of Cosines to determine the angle between two vectors in 3D space. ZYZ rotation of wrist has a redundancy where q5 can be +q5 or -q5 as shown in the illustration below.  
+
+    ![alt text][image21]  
+
+    The angle q4 and q6 can be also found using The Laws of Cosines. The q4 is the angle between unit x vector in link_4 frame when q4=0 and the projection of unit x vector in link_6 frame (derived from given roll, pitch, and yaw) onto link_4 xy plane. The q6 is the angle between unit x vector in link_6 frame when q6=0 and the unit x vector in link_6 frame (derived from given roll, pitch, and yaw).
+
+    ![alt text][image22]  
+
 
 
 ### Project Implementation
@@ -188,16 +224,28 @@ IK_server.py inverse kinematics calculation steps are explained below.
 3. Calculate Rrpy rotation matric given roll, pitch, and yaw And Obtain wrist center position
 ![alt text][image16]
 
-4. Calculate q1, q2, and q3
+4. Calculate q1, q2, and q3  
 ![alt text][image17]
 
 5. Calculate q4, q5, and q6  
-![alt text][image18]
+    ![alt text][image18]
+
+    Find the best possible combination of q4, q5, and q6
+
+    ![alt text][image27]    
+
+    Adding angle correction based on previous joint angles  
+
+    ![alt text][image28]  
+6. All the joint angles were found. Pass the values.
+
 
 **Results**  
-KUKA KR210 controlled by IK_server.py successfully completed pick and place cycle 10 out of 10. The video is available in the folder named "video."
+KUKA KR210 controlled by IK_server.py successfully completed pick and place cycle 10 out of 11. The video is available at the YOUTUBE link https://youtu.be/Udxl7IYnSyM.
 
-In the video, KUKA KR210 Arm follows the planned path and joint orientation and executes pick and place cycle. In the simulation environment, the error in the position and orientation of end effector can be small. In the real physical environment, backlash and link deformation cumulatively cause errors at end effector.
+In the video, KUKA KR210 Arm follows the planned path and joint orientation and executes pick and place cycle. The end effector position error was calculated using Pythagorean Theorem between calculated end effector position from forward kinematics and given end effector aimed position <px,py,pz>. The average error was about 0.05.
 
 **Further Improvements**  
-The inverse kinematics calculation performed in the IK_server.py uses acos() and asin() functions whose outputs are limited within 0 to pi and -pi/2 to pi/2, respectively. However, mechanical operating range for KUKA KR210 arm is more than what is defined by these numerical limitations. These can be improved by adding conditional arrangements to the output.  
+The inverse kinematics calculation performed in the IK_server.py uses acos() and atan2() functions whose outputs are limited within 0 to pi and -pi to pi, respectively. However, mechanical operating range for KUKA KR210 arm is more than what is defined by these numerical limitations. These can be improved by adding conditional arrangements to the output. Also, computational calculation always has errors to some degrees. Further research on how to reduce numerical calculation errors can improve the output of this project.  
+
+In the simulation environment, the error in the position and orientation of end effector can be relatively small. In the real physical environment, backlash and link deformation cumulatively cause errors at end effector. Mechanical designs also matters.
