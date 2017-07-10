@@ -80,8 +80,8 @@ Denavit-Hartenberg (DH) parameters for KUKA KR210 were defined using the steps b
 5. Define X axes that are common normal to both Z(i-1) and Zi  
 6. Obtain DH parameters alpha, a, d, and theta
     - alpha: the angle between Z(i-1) and Z about X(i-1) using Right-hand rule.
-    -     a: the offset from Z(i-1) to Zi along X(i-1)
-    -     d: the offset from X(i-1) to Xi along Zi
+    - a: the offset from Z(i-1) to Zi along X(i-1)
+    - d: the offset from X(i-1) to Xi along Zi
     - theta: the angle between X(i-1) to Xi about Zi using Right-hand rule.
 
 
@@ -241,6 +241,7 @@ IK_server.py inverse kinematics calculation steps are explained below.
 
 
 **Results**  
+
 KUKA KR210 controlled by IK_server.py successfully completed pick and place cycle 10 out of 11. The video is available at the YOUTUBE link https://youtu.be/Udxl7IYnSyM.
 
 In the video, KUKA KR210 Arm follows the planned path and joint orientation and executes pick and place cycle. The end effector position error was calculated using Pythagorean Theorem between calculated end effector position from forward kinematics and given end effector aimed position <px,py,pz>. The average error was about 0.05.
