@@ -221,7 +221,7 @@ IK_server.py inverse kinematics calculation steps are explained below.
 
     Step 3-5 Calculate joint angles q1-q6 using Geometric IK method
 
-3. Calculate Rrpy rotation matric given roll, pitch, and yaw And Obtain wrist center position
+3. Calculate Rrpy rotation matric given roll, pitch, and yaw And Obtain wrist center position  
 ![alt text][image16]
 
 4. Calculate q1, q2, and q3  
